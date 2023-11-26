@@ -15,16 +15,36 @@ const ComicForm = ({ onGenerateComic, isLoading, progress }) => {
 
   return (
     <>
-    <form onSubmit={handleSubmit}>
-      <label style={{ color: "#fff" }}>
-        Enter Text:
-        <input style={{height:"30px", width:"20vw", margin:"10px 10px 10px 10px"}} type="text" value={textInput} onChange={handleInputChange} />
-      </label>
-      <button className="button-29" style={{height:"30px", width:"10vw", margin:"10px 10px 10px 10px"}} type="submit" disabled={isLoading}>
-        {isLoading ? "Generating..." : "Generate Comic"}
-      </button>
-      <span style={{color:"white"}}>{isLoading && <p>Loading: {progress}%</p>}</span>
-    </form>
+      <form onSubmit={handleSubmit}>
+        <label style={{ color: "#fff" }}>
+          Enter Text:
+          <input
+            style={{
+              height: "30px",
+              width: "20vw",
+              margin: "10px 10px 10px 10px",
+            }}
+            type="text"
+            value={textInput}
+            onChange={handleInputChange}
+          />
+        </label>
+        <button
+          className="button-29"
+          style={{
+            height: "30px",
+            width: "10vw",
+            margin: "10px 10px 10px 10px",
+          }}
+          type="submit"
+          disabled={isLoading}
+        >
+          {isLoading ? "Generating..." : "Generate Comic"}
+        </button>
+        <span style={{ color: "white" }}>
+          {isLoading && <p>Loading: {progress}%</p>}
+        </span>
+      </form>
     </>
   );
 };
@@ -54,7 +74,7 @@ const Main = () => {
       if (isLoading && progress < 100) {
         setProgress((prevProgress) => prevProgress + 10);
       }
-    }, 300000); // Adjust the interval as needed
+    }, 300000); 
 
     return () => clearInterval(interval);
   }, [isLoading, progress]);
@@ -83,7 +103,9 @@ const Main = () => {
   return (
     <div>
       <img src={logo} height={"100px"} />
-      <h1 style={{ color: "#fff", position:"relative" }}>Comic Strip Generator</h1>
+      <h1 style={{ color: "#fff", position: "relative" }}>
+        Comic Strip Generator
+      </h1>
       <ComicForm
         onGenerateComic={onGenerateComic}
         isLoading={isLoading}
