@@ -16,13 +16,15 @@ const ComicForm = ({ onGenerateComic, isLoading, progress }) => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <label style={{ color: "#fff" }}>
+        <label style={{ color: "#fff", fontSize:"20px" }}>
           Enter Text:
           <input
             style={{
               height: "30px",
               width: "20vw",
               margin: "10px 10px 10px 10px",
+              borderRadius:"10px",
+              border:"0px"
             }}
             type="text"
             value={textInput}
@@ -74,7 +76,7 @@ const Main = () => {
       if (isLoading && progress < 100) {
         setProgress((prevProgress) => prevProgress + 10);
       }
-    }, 300000); 
+    }, 300000); // Adjust the interval as needed
 
     return () => clearInterval(interval);
   }, [isLoading, progress]);
@@ -100,9 +102,42 @@ const Main = () => {
     }
   };
 
+  const onSaveCollage = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+  
+    // Set canvas dimensions to A4 size (adjust as needed)
+    canvas.width = 794; // A4 width in pixels
+    canvas.height = 1123; // A4 height in pixels
+  
+    // Ensure all images are loaded before drawing them onto the canvas
+    const imagePromises = comicImages.map((image) => createImageBitmap(image));
+  
+    Promise.all(imagePromises)
+      .then((bitmaps) => {
+        // Draw each image onto the canvas
+        bitmaps.forEach((bitmap, index) => {
+          const x = (index % 2) * (canvas.width / 2);
+          const y = Math.floor(index / 2) * (canvas.height / 5);
+          ctx.drawImage(bitmap, x, y, canvas.width / 2, canvas.height / 5);
+        });
+  
+        // Convert the canvas content to a data URL and trigger download
+        const dataURL = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = dataURL;
+        link.download = "comic_collage.png";
+        link.click();
+      })
+      .catch((error) => {
+        console.error("Error creating image bitmaps:", error);
+      });
+  };
+  
+
   return (
     <div>
-      <img src={logo} height={"100px"} />
+      <img src={logo} height={"100px"} style={{margin:"60px 10px 10px 10px"}} />
       <h1 style={{ color: "#fff", position: "relative" }}>
         Comic Strip Generator
       </h1>
@@ -113,6 +148,10 @@ const Main = () => {
       />
       {isLoading && progress < 100 && <p>Loading: {progress}%</p>}
       {comicImages.length > 0 && <ComicStrip images={comicImages} />}
+      {comicImages.length > 0 && (
+        <button className="button-29" onClick={onSaveCollage}>Save Collage</button>
+      )}
+      <p style={{color:"#fff", fontWeight:"00"}}>This tool uses Dashtoon API, the image may take 3-4 minutes to render depending upon the API.</p>
     </div>
   );
 };
